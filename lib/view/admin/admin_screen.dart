@@ -144,20 +144,103 @@ class _AdminScreenState extends State<AdminScreen> {
     log('Employees: $employees');
   }
 
+  void _deleteEmployee(String employeeId) async {
+    // Reference to the Firestore collection (replace with your actual collection name)
+    CollectionReference employeesCollection =
+        FirebaseFirestore.instance.collection('employees');
+
+    try {
+      // Delete the employee document from Firestore using the employeeId
+      await employeesCollection.doc(employeeId).delete();
+
+      // Update the local employees list and the UI
+      setState(() {
+        employees
+            .removeWhere((employee) => employee['employee_id'] == employeeId);
+      });
+
+      // Optionally, show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Employee with ID $employeeId deleted successfully')),
+      );
+    } catch (e) {
+      // Handle any errors that occur during deletion
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete employee: $e')),
+      );
+    }
+  }
+
   // Widget to display employee details
   Widget _buildEmployeeList() {
     return employees.isNotEmpty
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: employees
-                .map(
-                  (employee) => Text(
-                    'Employee ID: ${employee['employee_id']}, Type: ${employee['employee_type']}',
+            children: employees.map((employee) {
+              return Card(
+                elevation: 3,
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.badge, color: Colors.blue),
+                              const SizedBox(width: 8),
+                              Text(
+                                'ID: ${employee['employee_id']}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Icon(Icons.person_outline,
+                                  color: Colors.blue),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${employee['employee_type']}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.black54),
+                        onPressed: () {
+                          // Call function to delete the employee from the list
+                          _deleteEmployee(employee['employee_id']);
+                        },
+                      ),
+                    ],
                   ),
-                )
-                .toList(),
+                ),
+              );
+            }).toList(),
           )
-        : const Text('No employees added yet.');
+        : const Center(
+            child: Text(
+              'No employees added yet.',
+              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+            ),
+          );
   }
 
   @override
@@ -165,7 +248,9 @@ class _AdminScreenState extends State<AdminScreen> {
     return Scaffold(
       drawer: const MyDrawer(),
       appBar: AppBar(
-        title: const Text('Admin'),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text('Admin', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -174,96 +259,272 @@ class _AdminScreenState extends State<AdminScreen> {
           child: Column(
             children: [
               officeDetails == null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text('Add Office'),
-                        const SizedBox(height: 20),
-                        TextField(
-                          decoration: const InputDecoration(
-                            hintText: 'Office Name',
-                          ),
-                          controller: officeName,
-                        ),
-                        const SizedBox(height: 10),
-                        TextField(
-                          decoration: const InputDecoration(
-                            hintText: 'Office Latitude',
-                          ),
-                          controller: officeLat,
-                        ),
-                        const SizedBox(height: 10),
-                        TextField(
-                          decoration: const InputDecoration(
-                            hintText: 'Office Longitude',
-                          ),
-                          controller: officeLong,
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: _setCurrentLocation,
-                          child: const Text('Current Location'),
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: _addOrUpdateOfficeInFirestore,
-                          child: const Text('Add Office'),
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
-              officeDetails != null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Your Office:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        Text('Office Name: $Name'),
-                        Text('Latitude $Lat'),
-                        Text('Longitude: $Long'),
-                        const SizedBox(height: 20),
-                        Row(
+                  ? Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
                           children: [
+                            const Text(
+                              'Add Office',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextField(
+                              decoration: InputDecoration(
+                                labelText: 'Office Name',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                prefixIcon: const Icon(Icons.business),
+                              ),
+                              controller: officeName,
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              decoration: InputDecoration(
+                                labelText: 'Office Latitude',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                prefixIcon: const Icon(Icons.location_on),
+                              ),
+                              controller: officeLat,
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              decoration: InputDecoration(
+                                labelText: 'Office Longitude',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                prefixIcon: const Icon(Icons.location_on),
+                              ),
+                              controller: officeLong,
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton.icon(
+                              onPressed: _setCurrentLocation,
+                              icon: const Icon(Icons.my_location),
+                              label: const Text('Use Current Location'),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 20,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
                             ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isEditingOffice = !isEditingOffice;
-                                  });
-                                },
-                                child: const Text('Edit Office')),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isAddingEmployee = !isAddingEmployee;
-                                  });
-                                },
-                                child: const Text('Add Employee')),
+                              onPressed: _addOrUpdateOfficeInFirestore,
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 20,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text('Add Office'),
+                            ),
                           ],
                         ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+              if (officeDetails != null) ...[
+                const SizedBox(height: 20),
+                Card(
+                  elevation:
+                      6, // Increased elevation for a more prominent shadow effect
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(16), // Smooth, rounded corners
+                  ),
+                  shadowColor:
+                      Colors.blueAccent.withOpacity(0.4), // Softer shadow color
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Office header with improved font and color
+                        const Row(
+                          children: [
+                            Icon(Icons.business,
+                                color: Colors.blueAccent), // Icon for office
+                            SizedBox(width: 8),
+                            Text(
+                              'Your Office:',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors
+                                    .blueAccent, // Accent color for better visuals
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                            height: 12), // Increased spacing for aesthetics
+
+                        // Office Name section with icon
+                        Row(
+                          children: [
+                            const Icon(Icons.location_city, color: Colors.grey),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Office Name: $Name',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors
+                                      .black87, // Softer black for readability
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8), // Spacing between details
+
+                        // Latitude section with icon
+                        Row(
+                          children: [
+                            const Icon(Icons.my_location, color: Colors.grey),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Latitude: $Lat',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Longitude section with icon
+                        Row(
+                          children: [
+                            const Icon(Icons.place, color: Colors.grey),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Longitude: $Long',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                            height: 24), // Spacing before the buttons
+                        // Row for action buttons with icons and padding
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween, // Equal spacing between buttons
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  isEditingOffice = !isEditingOffice;
+                                });
+                              },
+                              icon: const Icon(Icons.edit, color: Colors.white),
+                              label: const Text(
+                                'Edit Office',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 18,
+                                ),
+                                backgroundColor: Colors
+                                    .greenAccent[700], // Vibrant green color
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 4,
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  isAddingEmployee = !isAddingEmployee;
+                                });
+                              },
+                              icon: const Icon(Icons.person_add,
+                                  color: Colors.white),
+                              label: const Text(
+                                'Add Employee',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 18,
+                                ),
+                                backgroundColor:
+                                    Colors.blueAccent, // Matching blue accent
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 4,
+                              ),
+                            ),
+                          ],
+                        ),
+
                         if (isEditingOffice) ...[
+                          const SizedBox(height: 10),
                           TextField(
-                            decoration: const InputDecoration(
-                              hintText: 'Edit Office Name',
+                            decoration: InputDecoration(
+                              labelText: 'Edit Office Name',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              prefixIcon: const Icon(Icons.business),
                             ),
                             controller: officeName,
                           ),
                           const SizedBox(height: 10),
                           TextField(
-                            decoration: const InputDecoration(
-                              hintText: 'Edit Office Latitude',
+                            decoration: InputDecoration(
+                              labelText: 'Edit Office Latitude',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              prefixIcon: const Icon(Icons.location_on),
                             ),
                             controller: officeLat,
                           ),
                           const SizedBox(height: 10),
                           TextField(
-                            decoration: const InputDecoration(
-                              hintText: 'Edit Office Longitude',
+                            decoration: InputDecoration(
+                              labelText: 'Edit Office Longitude',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              prefixIcon: const Icon(Icons.location_on),
                             ),
                             controller: officeLong,
                           ),
@@ -277,23 +538,61 @@ class _AdminScreenState extends State<AdminScreen> {
                                   });
                                   _addOrUpdateOfficeInFirestore();
                                 },
-                                child: const Text('Save Changes'),
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 18,
+                                  ),
+                                  backgroundColor: Colors.greenAccent[700],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Save Changes',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                              ElevatedButton(
+                              const SizedBox(width: 10),
+                              ElevatedButton.icon(
                                 onPressed: _setCurrentLocation,
-                                child: const Text('Current Location'),
+                                icon: const Icon(
+                                  Icons.my_location,
+                                  color: Colors.white,
+                                ),
+                                label: const Text(
+                                  'Use Current Location',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 6,
+                                    horizontal: 8,
+                                  ),
+                                  backgroundColor: Colors.blueAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
                         ],
                         if (isAddingEmployee) ...[
+                          const SizedBox(height: 10),
                           TextField(
-                            decoration: const InputDecoration(
-                              hintText: 'Employee ID',
+                            decoration: InputDecoration(
+                              labelText: 'Employee ID',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              prefixIcon: const Icon(Icons.badge),
                             ),
                             controller: employeeIdController,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 15),
                           DropdownButtonFormField<String>(
                             value: selectedEmployeeType,
                             items: const [
@@ -307,14 +606,30 @@ class _AdminScreenState extends State<AdminScreen> {
                                 selectedEmployeeType = value!;
                               });
                             },
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Select Employee Type',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: _addEmployeeToFirestore,
-                            child: const Text('Add Employee'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 18,
+                              ),
+                              backgroundColor: Colors.greenAccent[700],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text('Add Employee',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                )),
                           ),
                         ],
                         const SizedBox(height: 20),
@@ -325,8 +640,10 @@ class _AdminScreenState extends State<AdminScreen> {
                         ),
                         _buildEmployeeList(),
                       ],
-                    )
-                  : const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+              ]
             ],
           ),
         ),
