@@ -279,319 +279,181 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Column(
-                children: [
-                  // Display check-in/check-out status based on the boolean flag
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  children: [
+                    // Display check-in/check-out status based on the boolean flag
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 30,
+                            color: isCheckedIn ? Colors.green : Colors.red,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Status: ${isCheckedIn ? "Checked In" : "Checked Out"}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: isCheckedIn ? Colors.green : Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+
+                    const SizedBox(
+                        height: 16), // Increased spacing for better layout
+
+                    // Display distance from office
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'Distance from office: ${distance.toStringAsFixed(2)} meters',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isCheckedIn
+                              ? Colors.green.shade700
+                              : Colors.red.shade700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
                         Icon(
-                          Icons.location_on,
+                          Icons.access_time,
                           size: 30,
                           color: isCheckedIn ? Colors.green : Colors.red,
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Status: ${isCheckedIn ? "Checked In" : "Checked Out"}',
+                          'Detailed Office Time',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: isCheckedIn ? Colors.green : Colors.red,
+                            color: Colors.blueGrey[800],
                           ),
                         ),
                       ],
                     ),
-                  ),
-
-                  const SizedBox(
-                      height: 16), // Increased spacing for better layout
-
-                  // Display distance from office
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      'Distance from office: ${distance.toStringAsFixed(2)} meters',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: isCheckedIn
-                            ? Colors.green.shade700
-                            : Colors.red.shade700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.access_time,
-                        size: 30,
-                        color: isCheckedIn ? Colors.green : Colors.red,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Detailed Office Time',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey[800],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 8.0,
-                          spreadRadius: 1.0,
-                        ),
-                      ],
-                    ),
-                    child: Table(
-                      border: TableBorder(
-                        horizontalInside:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        verticalInside:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        left:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        right:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        top: BorderSide.none,
-                        bottom: BorderSide.none,
-                      ),
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12)),
+                    const SizedBox(height: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 8.0,
+                            spreadRadius: 1.0,
                           ),
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                'FIRST CHECK IN',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                'FIRST CHECK OUT',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                'EFFECTIVE TIME IN OFFICE (MINUTES)',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                            ),
-                          ],
+                        ],
+                      ),
+                      child: Table(
+                        border: TableBorder(
+                          horizontalInside: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          verticalInside: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          left: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          right: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          top: BorderSide.none,
+                          bottom: BorderSide.none,
                         ),
-                        TableRow(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                                bottom: Radius.circular(12)),
+                        defaultVerticalAlignment:
+                            TableCellVerticalAlignment.middle,
+                        children: [
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(12)),
+                            ),
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  'FIRST CHECK IN',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  'FIRST CHECK OUT',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  'EFFECTIVE TIME IN OFFICE (MINUTES)',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                checkInTime != null
-                                    ? _formatTime(checkInTime!)
-                                    : 'N/A',
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.black87),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                checkOutTime != null
-                                    ? _formatTime(checkOutTime!)
-                                    : 'N/A',
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.black87),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                effectiveTime != null
-                                    ? '$effectiveTime minutes'
-                                    : '00',
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.black87),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.calendar_month,
-                        size: 28, // Slightly larger for better visibility
-                        color: Colors.blueAccent,
-                      ),
-                      const SizedBox(
-                          width: 8), // Increased spacing for better alignment
-                      Text(
-                        'Office Logs',
-                        style: TextStyle(
-                          fontSize:
-                              20, // Increased font size for better readability
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey[800],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                      height: 12), // Increased spacing for better aesthetics
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 8.0,
-                          spreadRadius: 2.0,
-                        ),
-                      ],
-                    ),
-                    child: Table(
-                      columnWidths: const {
-                        0: FlexColumnWidth(2.5),
-                        1: FlexColumnWidth(1),
-                      },
-                      border: TableBorder(
-                        horizontalInside:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        verticalInside:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        left:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        right:
-                            BorderSide(color: Colors.grey.shade300, width: 0.5),
-                        top: BorderSide.none,
-                        bottom: BorderSide.none,
-                      ),
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey.shade50,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12)),
-                          ),
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                'TIMESTAMP',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Text(
-                                'STATUS',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        ..._logs.map(
-                          (log) => TableRow(
+                          TableRow(
                             decoration: const BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.vertical(
@@ -602,7 +464,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12.0, horizontal: 16.0),
                                 child: Text(
-                                  log['timestamp']!,
+                                  checkInTime != null
+                                      ? _formatTime(checkInTime!)
+                                      : 'N/A',
                                   style: const TextStyle(
                                       fontSize: 14, color: Colors.black87),
                                 ),
@@ -611,20 +475,158 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12.0, horizontal: 16.0),
                                 child: Text(
-                                  log['status']!,
+                                  checkOutTime != null
+                                      ? _formatTime(checkOutTime!)
+                                      : 'N/A',
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.black87),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  effectiveTime != null
+                                      ? '$effectiveTime minutes'
+                                      : '00',
                                   style: const TextStyle(
                                       fontSize: 14, color: Colors.black87),
                                 ),
                               ),
                             ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.calendar_month,
+                          size: 28, // Slightly larger for better visibility
+                          color: Colors.blueAccent,
+                        ),
+                        const SizedBox(
+                            width: 8), // Increased spacing for better alignment
+                        Text(
+                          'Office Logs',
+                          style: TextStyle(
+                            fontSize:
+                                20, // Increased font size for better readability
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey[800],
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(
+                        height: 12), // Increased spacing for better aesthetics
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8.0,
+                            spreadRadius: 2.0,
+                          ),
+                        ],
+                      ),
+                      child: Table(
+                        columnWidths: const {
+                          0: FlexColumnWidth(2.5),
+                          1: FlexColumnWidth(1),
+                        },
+                        border: TableBorder(
+                          horizontalInside: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          verticalInside: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          left: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          right: BorderSide(
+                              color: Colors.grey.shade300, width: 0.5),
+                          top: BorderSide.none,
+                          bottom: BorderSide.none,
+                        ),
+                        defaultVerticalAlignment:
+                            TableCellVerticalAlignment.middle,
+                        children: [
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: Colors.blueGrey.shade50,
+                              borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(12)),
+                            ),
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  'TIMESTAMP',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  'STATUS',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          ..._logs.map(
+                            (log) => TableRow(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                    bottom: Radius.circular(12)),
+                              ),
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0, horizontal: 16.0),
+                                  child: Text(
+                                    log['timestamp']!,
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black87),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0, horizontal: 16.0),
+                                  child: Text(
+                                    log['status']!,
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black87),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
