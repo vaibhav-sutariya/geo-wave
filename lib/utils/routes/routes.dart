@@ -1,7 +1,7 @@
 import 'package:attendence_tracker/utils/routes/routes_name.dart';
 import 'package:attendence_tracker/view/admin/admin_screen.dart';
 import 'package:attendence_tracker/view/auth/google_signin_screen.dart';
-import 'package:attendence_tracker/view/home_screen.dart';
+import 'package:attendence_tracker/view/home/home_screen.dart';
 import 'package:attendence_tracker/view/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 

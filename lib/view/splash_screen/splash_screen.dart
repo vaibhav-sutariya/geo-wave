@@ -14,16 +14,50 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Wait for 3 seconds and then request location permission
+    // Request location permission
     location.checkLocationPermission(context);
-    // Future.delayed(const Duration(seconds: 3), () {});
   }
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        body: Center(
-      child: Text('Splash Screen'),
-    ));
+      backgroundColor: Colors.blueAccent,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Interactive icon or emoji representing location/attendance
+            Icon(
+              Icons.location_on,
+              size: 80,
+              color: Colors.white,
+            ),
+            SizedBox(height: 20),
+            // Splash screen text
+            Text(
+              'Attendance Tracker',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Automating your attendance with ease!',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white70,
+              ),
+            ),
+            SizedBox(height: 30),
+            // Loading indicator
+            CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
